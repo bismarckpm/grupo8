@@ -190,6 +190,8 @@ public static void validarArchivo(String excelFilePath){
 				case 1: 
 					System.out.println("1");
 					validarArchivo(excelFilePath);
+					agregarRegistros(excelFilePath);
+					mostrarTodosLosRegistros(excelFilePath);
 					break;
 				case 2: 
 					System.out.println("2");
