@@ -134,12 +134,45 @@ public static void validarArchivo(String excelFilePath){
 	File file = new File(excelFilePath);
 
 	if (file.exists()){
-		System.out.println("El archivo no existe. Creando uno");
-		//hace lo del main
+		agregarRegistros(excelFilePath);
 	}
 
 	else{
-		//crea el archivo y corre el main
+		System.out.println("El archivo no existe. Creando uno");
+		try{
+			Workbook workbook = new XSSFWorkbook();
+			Sheet sheet = workbook.createSheet("Java Books 1");
+			FileOutputStream out = new FileOutputStream("Inventario.xlsx");
+
+			FileInputStream inputStream = new FileInputStream("Inventario.xlsx");
+			Object[][] bookData = { { "No", "BookTitle", "Author", "Price" }, };
+
+			for (Object[] aBook : bookData) {
+				Row row = sheet.createRow(0);
+
+				int columnCount = -1;
+				Cell cell;
+				for (Object field : aBook) {
+					cell = row.createCell(++columnCount);
+					if (field instanceof String) {
+						cell.setCellValue((String) field);
+					} else if (field instanceof Integer) {
+						cell.setCellValue((Integer) field);
+					}
+				}
+		}
+			inputStream.close();
+			
+			
+			workbook.write(out);
+			workbook.close(); // JAR - Cierro el workbook
+			out.close();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Archivo creado");
 	}
 
 }
@@ -157,8 +190,6 @@ public static void validarArchivo(String excelFilePath){
 				case 1: 
 					System.out.println("1");
 					validarArchivo(excelFilePath);
-					agregarRegistros(excelFilePath);
-					mostrarTodosLosRegistros(excelFilePath);
 					break;
 				case 2: 
 					System.out.println("2");
