@@ -33,6 +33,7 @@ public class ExcelFileUpdateExample1 {
 		menu(opcion);
 	}
 
+	/*Codigo original que estaba en el main*/ 
 	public static void agregarRegistros(String excelFilePath){
 		
 		try {
@@ -82,7 +83,8 @@ public class ExcelFileUpdateExample1 {
 		}
 	}
 
-	public static void mostrarTodosLosRegistros(String excelFilePath){
+	/*Muestra todos los registros (incluso en otras hojas) de todo el archivo. */
+	public static void mostrarTodosLosRegistros(String excelFilePath){ 
 		try
 		{
 			FileInputStream file = new FileInputStream(new File(excelFilePath));
@@ -129,53 +131,55 @@ public class ExcelFileUpdateExample1 {
 		}
 
 	}
+	/*Valida y crea un nuevo archivo en caso de que no exista */
+	public static void validarArchivo(String excelFilePath){ 
+		File file = new File(excelFilePath);
 
-public static void validarArchivo(String excelFilePath){
-	File file = new File(excelFilePath);
+		if (file.exists()){
+			agregarRegistros(excelFilePath);
+		}
 
-	if (file.exists()){
-		agregarRegistros(excelFilePath);
-	}
+		else{
+			System.out.println("El archivo no existe. Creando uno");
+			try{
+				Workbook workbook = new XSSFWorkbook();
+				Sheet sheet = workbook.createSheet("Java Books 1");
+				FileOutputStream out = new FileOutputStream("Inventario.xlsx");
 
-	else{
-		System.out.println("El archivo no existe. Creando uno");
-		try{
-			Workbook workbook = new XSSFWorkbook();
-			Sheet sheet = workbook.createSheet("Java Books 1");
-			FileOutputStream out = new FileOutputStream("Inventario.xlsx");
+				FileInputStream inputStream = new FileInputStream("Inventario.xlsx");
+				Object[][] bookData = { { "No", "BookTitle", "Author", "Price" }, };
 
-			FileInputStream inputStream = new FileInputStream("Inventario.xlsx");
-			Object[][] bookData = { { "No", "BookTitle", "Author", "Price" }, };
+				for (Object[] aBook : bookData) {
+					Row row = sheet.createRow(0);
 
-			for (Object[] aBook : bookData) {
-				Row row = sheet.createRow(0);
-
-				int columnCount = -1;
-				Cell cell;
-				for (Object field : aBook) {
-					cell = row.createCell(++columnCount);
-					if (field instanceof String) {
-						cell.setCellValue((String) field);
-					} else if (field instanceof Integer) {
-						cell.setCellValue((Integer) field);
+					int columnCount = -1;
+					Cell cell;
+					for (Object field : aBook) {
+						cell = row.createCell(++columnCount);
+						if (field instanceof String) {
+							cell.setCellValue((String) field);
+						} else if (field instanceof Integer) {
+							cell.setCellValue((Integer) field);
+						}
 					}
-				}
+			}
+				inputStream.close();
+				
+				
+				workbook.write(out);
+				workbook.close(); // JAR - Cierro el workbook
+				out.close();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Archivo creado");
 		}
-			inputStream.close();
-			
-			
-			workbook.write(out);
-			workbook.close(); // JAR - Cierro el workbook
-			out.close();
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Archivo creado");
+
 	}
 
-}
+
 	public static void menu (int opcion){
 		while(opcion != 0){
 			try{
@@ -203,7 +207,7 @@ public static void validarArchivo(String excelFilePath){
 					System.out.println("Adios!");
 					break;
 				default:
-					System.out.println("Opcion no reconocido");break;
+					System.out.println("Opcion no reconocida");break;
 				}
 				
 				System.out.println("\n");
